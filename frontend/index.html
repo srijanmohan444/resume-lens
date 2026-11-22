@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resume Lens India - AI ATS Analyzer & Career Copilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0e3b3a;
+  --text: #14231f;
+  --muted: #5b6b69;
+  --paper: #f2f5f4;
+  --card: #ffffff;
+  --line: #d5ddda;
+  --gold: #f2a200;
+  --gold-soft: #fff6e0;
+  --bad: #b3261e;
+  --bad-soft: #fdecea;
+  --ok: #1d7a4f;
+  --ok-soft: #e6f4ea;
+  --indigo: #284b63;
+  --indigo-soft: #edf4f8;
+  --head: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 14px rgba(14,59,58,0.08);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--text); font: 16px/1.55 var(--body); }
+h1, h2, h3, h4 { font-family: var(--head); margin: 0; line-height: 1.2; color: var(--ink); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 20px; }
+header { border-bottom: 1px solid var(--line); background: var(--card); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
+header .wrap { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; }
+.brand { display: flex; align-items: center; gap: 10px; font: 700 22px var(--head); color: var(--ink); text-decoration: none; }
+.brand-badge { font: 600 11px var(--body); background: var(--gold-soft); color: #855300; padding: 3px 8px; border-radius: 99px; border: 1px solid #fedf89; }
+#status { display: flex; gap: 14px; font-size: 13px; color: var(--muted); align-items: center; }
+#status span::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background: var(--line); }
+#status .on::before { background: var(--ok); }
+#status .off::before { background: var(--bad); }
+
+.hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; padding: 56px 0 40px; align-items: center; }
+.hero h1 { font-size: clamp(32px, 5vw, 50px); font-weight: 700; max-width: 15ch; }
+.hero p { color: var(--muted); max-width: 46ch; margin: 16px 0 0; font-size: 17px; }
+.hero-highlights { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
+.pill-feature { font-size: 13px; font-weight: 500; background: var(--card); border: 1px solid var(--line); padding: 5px 12px; border-radius: 99px; color: var(--ink); display: flex; align-items: center; gap: 6px; }
+
+.card-box { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 28px; box-shadow: var(--shadow-md); }
+.drop { display: block; border: 2px dashed var(--ink); border-radius: 12px; background: #fafcfb; padding: 32px 20px; text-align: center; cursor: pointer; transition: all .15s ease; }
+.drop.over, .drop:hover { background: var(--gold-soft); border-color: var(--gold); }
+.drop strong { font: 700 19px var(--head); color: var(--ink); display: block; }
+.drop small { color: var(--muted); display: block; margin-top: 6px; font-size: 13px; }
+.drop input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+
+.field { margin-top: 16px; }
+.field label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; color: var(--ink); }
+input[type=text], select, textarea { width: 100%; padding: 11px 13px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); font-size: 14px; transition: border-color .15s; }
+input[type=text]:focus, select:focus, textarea:focus { border-color: var(--ink); }
+textarea { resize: vertical; min-height: 110px; line-height: 1.5; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 8px; background: var(--ink); color: #fff; font-weight: 600; padding: 12px 22px; cursor: pointer; transition: background .15s, transform .05s; }
+.btn:hover { background: #0a2c2b; }
+.btn:active { transform: scale(0.99); }
+.btn:disabled { opacity: .55; cursor: wait; }
+.btn.full { width: 100%; margin-top: 16px; }
+.btn.secondary { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+.btn.secondary:hover { background: #e3eae7; }
+.btn.sm { padding: 6px 12px; font-size: 13px; border-radius: 6px; }
+.btn.gold { background: var(--gold); color: #2e1a00; font-weight: 700; }
+.btn.gold:hover { background: #d99100; }
+
+.msg { margin-top: 14px; padding: 12px 14px; border-radius: 8px; font-size: 14px; }
+.msg.err { background: var(--bad-soft); color: var(--bad); border: 1px solid #f3c5c0; }
+.msg.warn { background: var(--gold-soft); color: #6b4a00; border: 1px solid #fedf89; }
+.msg.ok { background: var(--ok-soft); color: var(--ok); border: 1px solid #b9dcc9; }
+.hidden { display: none !important; }
+
+/* Results section */
+#results { padding: 32px 0 80px; }
+.layout { display: grid; grid-template-columns: 310px 1fr; gap: 32px; align-items: start; }
+.side { position: sticky; top: 76px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 24px; box-shadow: var(--shadow-sm); }
+.ring { position: relative; width: 132px; height: 132px; margin: 0 auto; }
+.ring svg { transform: rotate(-90deg); }
+.ring .num { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; font: 700 38px var(--head); color: var(--ink); }
+.ring .num small { display: block; font: 500 12px var(--body); color: var(--muted); }
+.verdict { text-align: center; font-weight: 600; margin: 10px 0 18px; }
+.bar { margin: 10px 0; font-size: 13px; }
+.bar div { display: flex; justify-content: space-between; margin-bottom: 3px; font-weight: 500; }
+.bar i { display: block; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.bar b { display: block; height: 100%; background: var(--ink); border-radius: 3px; }
+.side h3 { font-size: 15px; margin: 22px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12.5px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); background: var(--paper); }
+.chip.hit { background: var(--ok-soft); border-color: #b9dcc9; color: var(--ok); font-weight: 500; }
+.chip.gap { background: var(--bad-soft); border-color: #f3c5c0; color: var(--bad); font-weight: 500; }
+.chip.indigo { background: var(--indigo-soft); border-color: #c9dbe7; color: var(--indigo); font-weight: 500; }
+
+.main-content { min-width: 0; }
+.tabs { display: flex; gap: 8px; border-bottom: 2px solid var(--line); margin-bottom: 28px; }
+.tab { border: 0; background: none; padding: 12px 18px; font-weight: 600; font-size: 15px; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; display: inline-flex; align-items: center; gap: 8px; transition: all .15s; }
+.tab:hover { color: var(--ink); }
+.tab[aria-selected=true] { color: var(--ink); border-color: var(--gold); font-weight: 700; }
+.tab-badge { font-size: 11px; background: var(--line); color: var(--text); padding: 1px 7px; border-radius: 99px; }
+.tab[aria-selected=true] .tab-badge { background: var(--gold); color: #000; }
+
+/* Review Tab */
+.who { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px; margin-bottom: 24px; }
+.who h2 { font-size: 26px; }
+.who .sub { color: var(--ink); font-weight: 600; margin-top: 4px; font-size: 16px; }
+.who p { color: var(--muted); margin: 8px 0 0; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0; }
+.sec { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.sec h3 { font-size: 18px; margin-bottom: 12px; }
+ul.plain { margin: 0; padding-left: 20px; }
+ul.plain li { margin: 8px 0; }
+.fix { border-top: 1px solid var(--line); padding: 16px 0; }
+.fix:first-of-type { border-top: 0; padding-top: 4px; }
+.fix h4 { margin: 0 0 6px; font: 700 15px var(--head); color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.fix p { margin: 4px 0; font-size: 14px; }
+.fix .to { background: var(--gold-soft); border-left: 3px solid var(--gold); padding: 8px 12px; border-radius: 0 6px 6px 0; font-family: monospace; font-size: 13.5px; margin-top: 8px; color: #422a00; }
+
+/* Jobs Tab */
+.controls { display: grid; grid-template-columns: 1.4fr 1fr auto; gap: 12px; margin-bottom: 18px; align-items: end; background: var(--card); padding: 18px; border-radius: 12px; border: 1px solid var(--line); }
+.role-pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 20px; }
+.role-pill { font-size: 13px; font-weight: 500; background: var(--card); border: 1px solid var(--line); padding: 5px 12px; border-radius: 99px; cursor: pointer; transition: all .15s; }
+.role-pill:hover { border-color: var(--ink); background: var(--paper); }
+.job-list { display: grid; gap: 14px; }
+.job { display: grid; grid-template-columns: 68px 1fr auto; gap: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; align-items: center; transition: border-color .15s, box-shadow .15s; }
+.job:hover { border-color: #a7bbb5; box-shadow: var(--shadow-sm); }
+.job .score { font: 700 22px var(--head); color: var(--ok); width: 64px; height: 64px; border-radius: 50%; display: grid; place-content: center; background: var(--ok-soft); border: 2px solid #b9dcc9; }
+.job .score.low { color: var(--bad); background: var(--bad-soft); border-color: #f3c5c0; }
+.job .score.mid { color: #b27300; background: var(--gold-soft); border-color: #fedf89; }
+.job h4 { font-size: 17px; margin-bottom: 4px; }
+.meta { font-size: 13px; color: var(--muted); margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 10px; }
+.meta span { display: inline-flex; align-items: center; gap: 4px; }
+.meta .salary { color: var(--ok); font-weight: 600; background: #eaf6ef; padding: 2px 7px; border-radius: 4px; }
+.snip { font-size: 13.5px; color: #374744; margin: 6px 0 10px; line-height: 1.45; }
+.job-actions { display: flex; flex-direction: column; gap: 8px; min-width: 130px; }
+.src-tag { font-size: 11px; color: var(--muted); text-align: center; }
+
+/* Studio (Tailor & Mock Interview) Tab */
+.studio-box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 24px; margin-bottom: 24px; }
+.studio-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 14px; }
+.sample-jds { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; align-items: center; font-size: 13px; color: var(--muted); }
+.sample-jd-btn { background: #eef3f1; border: 1px solid #c9d8d3; border-radius: 6px; font-size: 12px; padding: 3px 9px; cursor: pointer; color: var(--ink); }
+.sample-jd-btn:hover { background: #d7e4df; }
+
+.tailor-result { margin-top: 28px; }
+.match-banner { display: grid; grid-template-columns: 140px 1fr; gap: 24px; background: #fafcfb; border: 1px solid var(--line); border-radius: 12px; padding: 20px; align-items: center; margin-bottom: 24px; }
+.match-score-badge { text-align: center; }
+.match-score-badge .score-val { font: 700 44px var(--head); line-height: 1; color: var(--ink); }
+.match-score-badge .score-lbl { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; margin-top: 4px; }
+.match-details h4 { font-size: 18px; margin-bottom: 6px; }
+.match-details p { margin: 0 0 10px; font-size: 14.5px; color: var(--muted); }
+
+.studio-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.studio-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px; }
+.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.card-top h3 { font-size: 18px; display: flex; align-items: center; gap: 8px; }
+
+/* Bullet diff */
+.bullet-card { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; background: #fafcfb; }
+.bullet-card .section-tag { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.bullet-diff { display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; margin: 8px 0; font-size: 13.5px; }
+.bullet-before { background: #fff5f5; border-left: 3px solid #e57373; padding: 8px 12px; border-radius: 0 6px 6px 0; color: #5a2727; }
+.bullet-after { background: #f0fdf4; border-left: 3px solid #48bb78; padding: 8px 12px; border-radius: 0 6px 6px 0; color: #1c4e2b; font-weight: 500; }
+.diff-label { font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; display: block; }
+.bullet-before .diff-label { color: #c53030; }
+.bullet-after .diff-label { color: #22543d; }
+.bullet-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 12px; }
+
+/* Cover Letter Box */
+.cover-letter-text { background: #f9fbfb; border: 1px solid var(--line); border-radius: 8px; padding: 18px; font-family: inherit; font-size: 14px; line-height: 1.65; white-space: pre-wrap; color: var(--text); }
+
+/* Interview Questions */
+.q-card { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; margin-bottom: 14px; background: var(--card); }
+.q-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+.q-title { font-weight: 600; font-size: 15px; color: var(--ink); }
+.q-type { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 3px 8px; border-radius: 99px; background: var(--indigo-soft); color: var(--indigo); border: 1px solid #c9dbe7; white-space: nowrap; }
+.q-meta { font-size: 13px; color: var(--muted); margin: 6px 0 10px; }
+.q-meta strong { color: var(--ink); }
+.q-talking-points { background: #f7faf9; border-left: 3px solid var(--ink); padding: 8px 14px; border-radius: 0 6px 6px 0; margin-bottom: 12px; font-size: 13.5px; }
+.q-practice-drawer { border-top: 1px dashed var(--line); padding-top: 12px; margin-top: 12px; }
+.eval-box { background: #f9fbfb; border: 1px solid #d5ddda; border-radius: 8px; padding: 14px; margin-top: 12px; font-size: 13.5px; }
+.eval-score { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 16px; color: var(--ok); margin-bottom: 6px; }
+
+/* Toast */
+#toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: #0e3b3a; color: #fff; padding: 10px 22px; border-radius: 99px; font-size: 14px; font-weight: 500; z-index: 1000; box-shadow: 0 6px 20px rgba(0,0,0,0.25); opacity: 0; transition: all .25s ease; pointer-events: none; }
+#toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* Spinners */
+.spin { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+.btn.secondary .spin { border-color: rgba(14,59,58,0.3); border-top-color: var(--ink); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Print styles */
+@media print {
+  header, #drop, .field, #analyze, .tabs, .controls, .job-actions, #toast, .sample-jds, .btn, .q-practice-drawer { display: none !important; }
+  body { background: #fff; font-size: 13px; }
+  .wrap { max-width: 100%; padding: 0; }
+  .layout { display: block; }
+  .side { position: static; box-shadow: none; border: 1px solid #ccc; margin-bottom: 20px; }
+  .sec, .who, .studio-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; margin-bottom: 16px; }
+}
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; gap: 32px; padding: 32px 0; }
+  .layout { grid-template-columns: 1fr; }
+  .side { position: static; }
+  .cols { grid-template-columns: 1fr; }
+  .bullet-diff { grid-template-columns: 1fr; }
+  .job { grid-template-columns: 1fr; }
+  .controls { grid-template-columns: 1fr; }
+  .match-banner { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <a href="#" class="brand">
+        Resume Lens
+        <span class="brand-badge">Major Project Edition</span>
+      </a>
+    </div>
+    <div id="status">
+      <!-- Live API health dots -->
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1>Transform your resume into job offers.</h1>
+      <p>Instant ATS diagnostics, live Indian job matching, Google XYZ bullet optimizer, and an AI interview simulator tailored to your target roles.</p>
+      <div class="hero-highlights">
+        <span class="pill-feature">🎯 100-Point ATS Audit</span>
+        <span class="pill-feature">💼 Live Indian Openings</span>
+        <span class="pill-feature">⚡ AI Job Description Match</span>
+        <span class="pill-feature">🎤 Mock Interview Simulator</span>
+      </div>
+    </div>
+
+    <div class="card-box">
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept=".pdf,.docx,.txt">
+        <strong id="dropTitle">Drop your resume here</strong>
+        <small id="dropHint">PDF, DOCX or TXT (up to 5 MB)</small>
+      </label>
+
+      <div class="field">
+        <label for="target">Target job role (optional)</label>
+        <input type="text" id="target" placeholder="e.g. Full Stack Developer, Data Analyst, Product Manager">
+      </div>
+
+      <button class="btn full" id="analyze" disabled>Analyse Resume</button>
+      <div id="uploadMsg"></div>
+    </div>
+  </section>
+
+  <section id="results" class="hidden">
+    <div class="layout">
+      <!-- Left Sticky Sidebar -->
+      <aside class="side" id="side">
+        <!-- Rendered dynamically -->
+      </aside>
+
+      <!-- Right Main Content -->
+      <div class="main-content">
+        <!-- Tab Navigation -->
+        <nav class="tabs" role="tablist">
+          <button class="tab" id="t-review" aria-selected="true" role="tab">
+            📋 ATS Audit & Fixes
+          </button>
+          <button class="tab" id="t-jobs" aria-selected="false" role="tab">
+            💼 Live Job Matches <span class="tab-badge" id="jobCountBadge">0</span>
+          </button>
+          <button class="tab" id="t-tailor" aria-selected="false" role="tab">
+            🎯 JD Tailor & Interview Studio <span class="tab-badge" style="background:var(--gold);color:#000;">NEW</span>
+          </button>
+        </nav>
+
+        <!-- TAB 1: ATS Review & Fixes -->
+        <div id="review">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- TAB 2: Live Job Matches -->
+        <div id="jobsPane" class="hidden">
+          <div class="controls">
+            <div>
+              <label for="role" style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">Target Role</label>
+              <input type="text" id="role" placeholder="e.g. Python Developer">
+            </div>
+            <div>
+              <label for="city" style="font-size:13px; font-weight:600; display:block; margin-bottom:4px;">City</label>
+              <select id="city"></select>
+            </div>
+            <button class="btn" id="find" style="height:44px;">Find Jobs</button>
+          </div>
+
+          <div style="font-size:13px; color:var(--muted); margin-bottom:4px; font-weight:600;">Recommended roles based on your skills:</div>
+          <div class="role-pills" id="roleChips"></div>
+
+          <div id="jobMsg"></div>
+          <div class="job-list" id="jobList"></div>
+        </div>
+
+        <!-- TAB 3: JD Tailor & Interview Studio (UNIQUE KILLER FEATURE) -->
+        <div id="tailorPane" class="hidden">
+          <div class="studio-box">
+            <div class="studio-header">
+              <div>
+                <h2>🎯 JD Match & AI Career Copilot Studio</h2>
+                <p style="color:var(--muted); margin:4px 0 0; font-size:14.5px;">
+                  Target any specific job description to get a deep ATS gap audit, Google XYZ-formula bullet rewrites, a custom cover letter, and a mock interview coach!
+                </p>
+              </div>
+            </div>
+
+            <div class="sample-jds">
+              <span>Quick Demo Roles:</span>
+              <button class="sample-jd-btn" id="demoSde">SDE-1 Python @ Swiggy</button>
+              <button class="sample-jd-btn" id="demoReact">Frontend React @ Razorpay</button>
+              <button class="sample-jd-btn" id="demoData">Data Analyst @ Flipkart</button>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px;">
+              <div class="field" style="margin-top:0;">
+                <label for="tailorRole">Job Title</label>
+                <input type="text" id="tailorRole" placeholder="e.g. SDE-1 (Backend)">
+              </div>
+              <div class="field" style="margin-top:0;">
+                <label for="tailorCompany">Company Name</label>
+                <input type="text" id="tailorCompany" placeholder="e.g. Swiggy, Razorpay, TCS, Infosys">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="tailorJD">Job Description (paste from LinkedIn, Naukri, or company careers page)</label>
+              <textarea id="tailorJD" placeholder="Paste the full job description or requirements here..."></textarea>
+            </div>
+
+            <button class="btn gold" id="runTailorBtn" style="margin-top:12px; padding:12px 24px;">
+              ⚡ Run Deep JD Match & Tailor Kit
+            </button>
+            <div id="tailorMsg"></div>
+          </div>
+
+          <!-- Studio Results Container -->
+          <div id="studioResults" class="hidden tailor-result">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="toast">Copied to clipboard!</div>
+
+<script>
+let file = null, analysisId = null, analysis = null, currentTailored = null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = u => /^https?:\/\//i.test(u) ? u : "#";
+
+function showToast(msg = "Copied to clipboard!") {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2500);
+}
+
+function copyText(txt, label = "Copied to clipboard!") {
+  navigator.clipboard.writeText(txt).then(() => showToast(label)).catch(() => {});
+}
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, opts);
+  const isJson = (r.headers.get("content-type") || "").includes("application/json");
+  const body = isJson ? await r.json() : await r.text();
+  if (!r.ok) {
+    const msg = (isJson && (body.detail || body.message)) || (typeof body === "string" ? body : `Request failed (${r.status})`);
+    throw new Error(msg);
+  }
+  return body;
+}
+
+const note = (el, text, kind = "err") => {
+  el.innerHTML = text ? `<div class="msg ${kind}" role="alert">${esc(text)}</div>` : "";
+};
+
+// Health status check
+api("/api/health").then(h => {
+  $("#status").innerHTML = [["Gemini", h.gemini], ["Adzuna", h.adzuna], ["JSearch", h.jsearch]]
+    .map(([n, on]) => `<span class="${on ? "on" : "off"}">${n} ${on ? "active" : "standby"}</span>`).join("");
+  $("#city").innerHTML = h.cities.map(c => `<option>${esc(c)}</option>`).join("");
+}).catch(() => {});
+
+// File drop & pick
+function pick(f) {
+  if (!f) return;
+  file = f;
+  $("#dropTitle").textContent = f.name;
+  $("#dropHint").textContent = (f.size / 1024).toFixed(0) + " KB selected. Click to change file.";
+  $("#analyze").disabled = false;
+  note($("#uploadMsg"), "");
+}
+$("#file").addEventListener("change", e => pick(e.target.files[0]));
+const drop = $("#drop");
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => pick(e.dataTransfer.files[0]));
+
+function busy(btn, on, label) {
+  btn.disabled = on;
+  btn.innerHTML = on ? `<span class="spin"></span>${label}` : btn.dataset.label;
+}
+document.querySelectorAll(".btn").forEach(b => b.dataset.label = b.textContent);
+
+// Analyze Resume
+$("#analyze").addEventListener("click", async () => {
+  const btn = $("#analyze");
+  busy(btn, true, "Analyzing resume with AI");
+  note($("#uploadMsg"), "");
+  const fd = new FormData();
+  fd.append("file", file);
+  fd.append("target_role", $("#target").value);
+  try {
+    const res = await api("/api/analyze", { method: "POST", body: fd });
+    analysisId = res.analysis_id;
+    analysis = res.analysis;
+    render();
+  } catch (e) {
+    note($("#uploadMsg"), e.message);
+  }
+  busy(btn, false);
+  if (!file) btn.disabled = true;
+});
+
+function verdict(s) {
+  return s >= 85 ? "Excellent ATS Match" : s >= 70 ? "Strong Competitive Profile" : s >= 50 ? "Decent, With Clear Gaps" : "Needs Immediate Revision";
+}
+const list = a => (a && a.length) ? `<ul class="plain">${a.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "<p>None found.</p>";
+
+function render() {
+  const a = analysis, C = 2 * Math.PI * 56, off = C * (1 - a.ats_score / 100);
+  const labels = { keywords: "Keywords Match", formatting: "ATS Formatting", impact: "Measurable Impact", structure: "Section Structure" };
+  
+  $("#side").innerHTML = `
+    <div class="ring">
+      <svg width="132" height="132" viewBox="0 0 132 132">
+        <circle cx="66" cy="66" r="56" fill="none" stroke="#d5ddda" stroke-width="10"/>
+        <circle cx="66" cy="66" r="56" fill="none" stroke="#f2a200" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}"/>
+      </svg>
+      <div class="num"><span>${a.ats_score}<small>ATS score</small></span></div>
+    </div>
+    <p class="verdict">${verdict(a.ats_score)}</p>
+    ${Object.entries(a.score_breakdown).map(([k, v]) => `
+      <div class="bar">
+        <div><span>${labels[k] || k}</span><span>${v}%</span></div>
+        <i><b style="width:${v}%"></b></i>
+      </div>
+    `).join("")}
+    
+    <button class="btn secondary sm full" onclick="window.print()" style="margin:16px 0 20px;">
+      🖨️ Export / Print ATS Report
+    </button>
+
+    <h3>Skills Detected (${a.skills.length})</h3>
+    <div class="chips">${a.skills.map(s => `<span class="chip">${esc(s)}</span>`).join("") || "None detected"}</div>
+  `;
+
+  $("#review").innerHTML = `
+    <div class="who">
+      <h2>${esc(a.candidate_name || "Candidate Resume")}</h2>
+      <div class="sub">${esc(a.headline)}</div>
+      <p>${esc(a.summary)}</p>
+      <div style="margin-top:12px; font-size:13.5px; color:var(--muted);">
+        <strong>Experience:</strong> ${a.experience_years ? a.experience_years + " years" : "Fresher"} | <strong>Current Role:</strong> ${esc(a.current_role || "Not specified")}
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="sec">
+        <h3>✅ Strengths Identified</h3>
+        ${list(a.strengths)}
+      </div>
+      <div class="sec">
+        <h3>⚠️ Critical Weaknesses</h3>
+        ${list(a.weaknesses)}
+      </div>
+    </div>
+
+    <div class="sec">
+      <h3>🛠️ Recommended Fixes (Ranked by Impact)</h3>
+      ${a.improvements.map(i => `
+        <div class="fix">
+          <h4>📌 ${esc(i.section)}: ${esc(i.issue)}</h4>
+          <p class="to">💡 Fix: ${esc(i.fix)}</p>
+        </div>
+      `).join("")}
+    </div>
+
+    <div class="sec" style="margin-top:24px">
+      <h3>🚀 Suggested Roles Matching Your Profile</h3>
+      <div style="display:grid; gap:12px; margin-top:8px;">
+        ${a.suggested_roles.map(r => `
+          <div style="background:#f7faf9; border:1px solid var(--line); border-radius:8px; padding:12px 14px;">
+            <strong style="color:var(--ink); font-size:15px;">${esc(r.title)}</strong>
+            <p style="margin:4px 0 0; color:var(--muted); font-size:13.5px;">${esc(r.reason)}</p>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+
+  // Update role chips and inputs
+  $("#roleChips").innerHTML = a.suggested_roles.map(r => `<button class="role-pill" data-role="${esc(r.title)}">${esc(r.title)}</button>`).join("");
+  const primaryRole = $("#target").value.trim() || (a.suggested_roles[0] && a.suggested_roles[0].title) || a.current_role || "Software Engineer";
+  $("#role").value = primaryRole;
+  $("#tailorRole").value = primaryRole;
+
+  $("#results").classList.remove("hidden");
+  showTab("review");
+  $("#results").scrollIntoView({ behavior: "smooth" });
+}
+
+// Tab navigation
+function showTab(t) {
+  $("#review").classList.toggle("hidden", t !== "review");
+  $("#jobsPane").classList.toggle("hidden", t !== "jobs");
+  $("#tailorPane").classList.toggle("hidden", t !== "tailor");
+
+  $("#t-review").setAttribute("aria-selected", t === "review");
+  $("#t-jobs").setAttribute("aria-selected", t === "jobs");
+  $("#t-tailor").setAttribute("aria-selected", t === "tailor");
+}
+$("#t-review").onclick = () => showTab("review");
+$("#t-jobs").onclick = () => {
+  showTab("jobs");
+  if (!$("#jobList").children.length) findJobs();
+};
+$("#t-tailor").onclick = () => showTab("tailor");
+
+// Role chips in jobs tab
+$("#roleChips").addEventListener("click", e => {
+  const b = e.target.closest(".role-pill");
+  if (b) {
+    $("#role").value = b.dataset.role;
+    findJobs();
+  }
+});
+$("#find").onclick = findJobs;
+$("#role").addEventListener("keydown", e => { if (e.key === "Enter") findJobs(); });
+
+// Search Live Jobs
+async function findJobs() {
+  const role = $("#role").value.trim();
+  if (role.length < 2) return note($("#jobMsg"), "Please enter a job title to search.");
+  const btn = $("#find");
+  busy(btn, true, "Searching");
+  note($("#jobMsg"), "");
+  $("#jobList").innerHTML = "";
+  try {
+    const res = await api("/api/jobs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ analysis_id: analysisId, role, city: $("#city").value })
+    });
+    if (res.warnings && res.warnings.length) {
+      note($("#jobMsg"), res.warnings.join(" "), "warn");
+    }
+    $("#jobCountBadge").textContent = res.jobs.length;
+    if (!res.jobs.length) {
+      $("#jobList").innerHTML = `<p style="padding:20px; text-align:center; color:var(--muted);">No openings found for "${esc(role)}" in ${esc($("#city").value)}. Try searching All India or a broader title.</p>`;
+    } else {
+      $("#jobList").innerHTML = res.jobs.map(jobRow).join("");
+    }
+  } catch (e) {
+    note($("#jobMsg"), e.message);
+  }
+  busy(btn, false);
+}
+
+function jobRow(j) {
+  const meta = [
+    j.company && `<strong>${esc(j.company)}</strong>`,
+    j.location,
+    j.salary && `<span class="salary">${esc(j.salary)}</span>`,
+    j.type,
+    j.posted && `Posted ${esc(j.posted)}`
+  ].filter(Boolean).map(m => `<span>${m}</span>`).join(" • ");
+
+  const hit = j.matched_skills.map(s => `<span class="chip hit">✓ ${esc(s)}</span>`).join("");
+  const gap = j.missing_skills.map(s => `<span class="chip gap">✗ ${esc(s)}</span>`).join("");
+  const matchClass = j.match >= 75 ? "" : (j.match >= 50 ? "mid" : "low");
+
+  return `
+    <article class="job">
+      <div class="score ${matchClass}" title="ATS Match Score">${j.match}%</div>
+      <div>
+        <h4>${esc(j.title)}</h4>
+        <div class="meta">${meta}</div>
+        <p class="snip">${esc(j.snippet)}...</p>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          ${hit ? `<div class="chips" title="Skills matching your resume">${hit}</div>` : ""}
+          ${gap ? `<div class="chips" title="Skills required by this role that are missing in your resume">${gap}</div>` : ""}
+        </div>
+      </div>
+      <div class="job-actions">
+        <button class="btn gold sm prep-btn" data-title="${esc(j.title)}" data-company="${esc(j.company)}" data-snippet="${esc(j.snippet)}">
+          ⚡ Tailor & Prep
+        </button>
+        <a class="btn sm secondary" href="${esc(safeUrl(j.url))}" target="_blank" rel="noopener noreferrer">
+          Apply Now ↗
+        </a>
+        <span class="src-tag">via ${esc(j.source)}</span>
+      </div>
+    </article>
+  `;
+}
+
+// 1-Click "Tailor & Prep" from any Job card
+$("#jobList").addEventListener("click", e => {
+  const btn = e.target.closest(".prep-btn");
+  if (!btn) return;
+  const title = btn.dataset.title;
+  const company = btn.dataset.company;
+  const snippet = btn.dataset.snippet;
+
+  $("#tailorRole").value = title;
+  $("#tailorCompany").value = company;
+  $("#tailorJD").value = `${title} at ${company}\n\nJob Description & Requirements:\n${snippet}`;
+  showTab("tailor");
+  runTailor();
+});
+
+// Demo sample JDs for immediate testing
+const SAMPLE_JDS = {
+  sde: {
+    role: "SDE-1 (Python & Backend)",
+    company: "Swiggy",
+    jd: "Swiggy is hiring a Backend Engineer to build high-scale microservices. Key Responsibilities: Design and maintain REST APIs using Python (FastAPI/Django). Work with PostgreSQL, Redis caching, and RabbitMQ/Kafka message queues. Deploy services on AWS and Docker. Qualifications: Strong fundamentals in Data Structures, Algorithms, System Design, and automated testing (pytest)."
+  },
+  react: {
+    role: "Frontend Engineer (React / Next.js)",
+    company: "Razorpay",
+    jd: "Razorpay is looking for an experienced Frontend Engineer to craft seamless checkout experiences. Responsibilities: Build modular, high-performance UI components using React, TypeScript, and Redux/Zustand. Optimize core web vitals, bundle sizes, and state management. Collaborate with UX designers on Figma designs and integrate REST/GraphQL APIs."
+  },
+  data: {
+    role: "Data Analyst",
+    company: "Flipkart",
+    jd: "Flipkart's Marketplace Analytics team seeks a Data Analyst. Responsibilities: Analyze customer journey, retention cohorts, and sales funnels. Write complex SQL queries on Snowflake/BigQuery. Build executive dashboards in Power BI and Tableau. Perform statistical analysis and predictive modeling using Python (Pandas, NumPy, Scikit-learn)."
+  }
+};
+
+$("#demoSde").onclick = () => {
+  $("#tailorRole").value = SAMPLE_JDS.sde.role;
+  $("#tailorCompany").value = SAMPLE_JDS.sde.company;
+  $("#tailorJD").value = SAMPLE_JDS.sde.jd;
+};
+$("#demoReact").onclick = () => {
+  $("#tailorRole").value = SAMPLE_JDS.react.role;
+  $("#tailorCompany").value = SAMPLE_JDS.react.company;
+  $("#tailorJD").value = SAMPLE_JDS.react.jd;
+};
+$("#demoData").onclick = () => {
+  $("#tailorRole").value = SAMPLE_JDS.data.role;
+  $("#tailorCompany").value = SAMPLE_JDS.data.company;
+  $("#tailorJD").value = SAMPLE_JDS.data.jd;
+};
+
+// Run Tailor Analysis
+$("#runTailorBtn").onclick = runTailor;
+
+async function runTailor() {
+  if (!analysisId) return alert("Please upload and analyze a resume first.");
+  const role = $("#tailorRole").value.trim();
+  const company = $("#tailorCompany").value.trim();
+  const jd = $("#tailorJD").value.trim();
+
+  if (jd.length < 20) {
+    return note($("#tailorMsg"), "Please paste a job description (at least 20 characters).");
+  }
+
+  const btn = $("#runTailorBtn");
+  busy(btn, true, "Synthesizing Tailored Kit with AI...");
+  note($("#tailorMsg"), "");
+  $("#studioResults").classList.add("hidden");
+
+  try {
+    const res = await api("/api/tailor", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        analysis_id: analysisId,
+        job_title: role,
+        company: company,
+        job_description: jd
+      })
+    });
+    currentTailored = res.tailored;
+    renderStudioResults(currentTailored, role, company);
+  } catch (e) {
+    note($("#tailorMsg"), e.message);
+  }
+  busy(btn, false);
+}
+
+function renderStudioResults(t, role, company) {
+  const scoreClass = t.match_score >= 75 ? "ok" : (t.match_score >= 50 ? "gold" : "bad");
+
+  let bulletsHtml = "";
+  if (t.optimized_bullets && t.optimized_bullets.length) {
+    bulletsHtml = t.optimized_bullets.map((b, idx) => `
+      <div class="bullet-card">
+        <div class="section-tag">${esc(b.original_area || "Resume Experience Point")}</div>
+        <div class="bullet-diff">
+          <div class="bullet-before">
+            <span class="diff-label">Original / Unoptimized</span>
+            ${esc(b.before)}
+          </div>
+          <div class="bullet-after">
+            <span class="diff-label">Google XYZ Formula Optimized</span>
+            ${esc(b.after)}
+          </div>
+        </div>
+        <div class="bullet-footer">
+          <div class="chips">
+            ${(b.keywords_added || []).map(k => `<span class="chip hit">+ ${esc(k)}</span>`).join("")}
+          </div>
+          <button class="btn secondary sm" onclick="copyText('${esc(b.after).replace(/'/g, "\\'")}', 'Bullet point copied!')">
+            📋 Copy Bullet
+          </button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  const allOptimizedBullets = (t.optimized_bullets || []).map(b => "• " + b.after).join("\n");
+
+  let questionsHtml = "";
+  if (t.interview_questions && t.interview_questions.length) {
+    questionsHtml = t.interview_questions.map((q, idx) => `
+      <div class="q-card" id="qcard-${idx}">
+        <div class="q-head">
+          <div class="q-title">Q${idx + 1}: ${esc(q.question)}</div>
+          <span class="q-type">${esc(q.type || "Technical")}</span>
+        </div>
+        <div class="q-meta">
+          <strong>Why Interviewers Ask This:</strong> ${esc(q.why_asked)}
+        </div>
+        <div class="q-talking-points">
+          <strong>Key Talking Points to Include:</strong>
+          <ul style="margin:4px 0 0; padding-left:18px;">
+            ${(q.talking_points || []).map(p => `<li>${esc(p)}</li>`).join("")}
+          </ul>
+        </div>
+        <div class="q-practice-drawer">
+          <button class="btn secondary sm" onclick="togglePractice(${idx})">
+            🎤 Practice Your Answer
+          </button>
+          <div id="drawer-${idx}" class="hidden" style="margin-top:10px;">
+            <textarea id="answer-${idx}" placeholder="Type or dictate your answer here..." style="min-height:80px;"></textarea>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+              <button class="btn sm" id="evalBtn-${idx}" onclick="evaluateAnswer(${idx}, '${esc(q.question).replace(/'/g, "\\'")}', '${esc(role).replace(/'/g, "\\'")}')">
+                AI Score & Feedback
+              </button>
+            </div>
+            <div id="evalRes-${idx}"></div>
+          </div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  $("#studioResults").innerHTML = `
+    <!-- Top Match Banner -->
+    <div class="match-banner">
+      <div class="match-score-badge">
+        <div class="score-val" style="color:var(--${scoreClass});">${t.match_score}%</div>
+        <div class="score-lbl">Role Match</div>
+      </div>
+      <div class="match-details">
+        <h4>${esc(t.match_verdict)} for ${esc(role || "Target Role")} ${company ? "at " + esc(company) : ""}</h4>
+        <p>Comparison of your background with the specific qualifications and competencies of this opening.</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px;">
+          <div>
+            <strong style="font-size:12px; text-transform:uppercase; color:var(--bad); display:block; margin-bottom:4px;">Critical Skill Gaps</strong>
+            <div class="chips">${(t.critical_gaps || []).map(g => `<span class="chip gap">✗ ${esc(g)}</span>`).join("") || "None detected"}</div>
+          </div>
+          <div>
+            <strong style="font-size:12px; text-transform:uppercase; color:var(--ok); display:block; margin-bottom:4px;">Matching Strengths</strong>
+            <div class="chips">${(t.key_matches || []).map(m => `<span class="chip hit">✓ ${esc(m)}</span>`).join("") || "None detected"}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="studio-grid">
+      <!-- 1. Tailored Summary -->
+      <div class="studio-card">
+        <div class="card-top">
+          <h3>📌 Tailored Profile Summary (For Top of Resume)</h3>
+          <button class="btn secondary sm" onclick="copyText('${esc(t.tailored_summary).replace(/'/g, "\\'")}', 'Summary copied!')">
+            📋 Copy Summary
+          </button>
+        </div>
+        <p style="font-size:15px; color:var(--text); line-height:1.6; background:#f7faf9; border-left:3px solid var(--ink); padding:12px 14px; border-radius:0 8px 8px 0;">
+          ${esc(t.tailored_summary)}
+        </p>
+      </div>
+
+      <!-- 2. Google XYZ Bullet Rewriter -->
+      <div class="studio-card">
+        <div class="card-top">
+          <div>
+            <h3>✨ ATS Resume Bullet Optimizer (Google XYZ Formula)</h3>
+            <p style="color:var(--muted); font-size:13px; margin:2px 0 0;">
+              Rewritten following Google's formula: <em>"Accomplished [X], as measured by [Y], by doing [Z]"</em> with missing JD keywords.
+            </p>
+          </div>
+          <button class="btn gold sm" onclick="copyText('${esc(allOptimizedBullets).replace(/'/g, "\\'")}', 'All bullets copied!')">
+            📋 Copy All Optimized Bullets
+          </button>
+        </div>
+        <div style="margin-top:14px;">${bulletsHtml}</div>
+      </div>
+
+      <!-- 3. Tailored Cover Letter -->
+      <div class="studio-card">
+        <div class="card-top">
+          <h3>✉️ AI-Tailored Indian Corporate Cover Letter</h3>
+          <div style="display:flex; gap:8px;">
+            <button class="btn secondary sm" onclick="copyText('${esc(t.cover_letter).replace(/'/g, "\\'")}', 'Cover letter copied!')">
+              📋 Copy Cover Letter
+            </button>
+            <button class="btn secondary sm" onclick="downloadCoverLetter('${esc(role).replace(/'/g, "\\'")}', '${esc(company).replace(/'/g, "\\'")}')">
+              💾 Download (.txt)
+            </button>
+          </div>
+        </div>
+        <div class="cover-letter-text" id="coverLetterBox">${esc(t.cover_letter)}</div>
+      </div>
+
+      <!-- 4. Mock Interview Simulator -->
+      <div class="studio-card">
+        <div class="card-top">
+          <div>
+            <h3>🎤 Interactive AI Technical & Behavioral Mock Interviewer</h3>
+            <p style="color:var(--muted); font-size:13px; margin:2px 0 0;">
+              Top 5 questions targeting this role and your resume gaps. Practice your response for instant AI grading!
+            </p>
+          </div>
+        </div>
+        <div style="margin-top:14px;">${questionsHtml}</div>
+      </div>
+    </div>
+  `;
+
+  $("#studioResults").classList.remove("hidden");
+  $("#studioResults").scrollIntoView({ behavior: "smooth" });
+}
+
+function togglePractice(idx) {
+  const d = $(`#drawer-${idx}`);
+  d.classList.toggle("hidden");
+}
+
+async function evaluateAnswer(idx, question, role) {
+  const input = $(`#answer-${idx}`);
+  const userAns = input.value.trim();
+  const resBox = $(`#evalRes-${idx}`);
+  const btn = $(`#evalBtn-${idx}`);
+
+  if (userAns.length < 10) {
+    resBox.innerHTML = `<div class="msg warn">Please provide a more detailed answer to evaluate (at least 10 characters).</div>`;
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spin"></span> Grading with AI...`;
+  resBox.innerHTML = "";
+
+  try {
+    const res = await api("/api/interview/evaluate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        role: role || "Software Engineer",
+        question: question,
+        user_answer: userAns
+      })
+    });
+    const ev = res.evaluation;
+    resBox.innerHTML = `
+      <div class="eval-box">
+        <div class="eval-score">
+          Score: ${ev.score}/10 <span style="font-size:13px; font-weight:500; color:var(--muted);">(${esc(ev.verdict)})</span>
+        </div>
+        <p style="margin:4px 0 8px;"><strong>💡 Coaching Tip:</strong> ${esc(ev.coaching_tip)}</p>
+        <div style="margin:6px 0;">
+          <strong>✅ What You Did Well:</strong>
+          <ul style="margin:2px 0 6px; padding-left:18px;">${(ev.strengths || []).map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+        </div>
+        <div style="margin:6px 0;">
+          <strong>⚠️ Key Points You Missed:</strong>
+          <ul style="margin:2px 0 6px; padding-left:18px;">${(ev.missing_points || []).map(m => `<li>${esc(m)}</li>`).join("")}</ul>
+        </div>
+        <div style="margin-top:10px; background:#fff; padding:10px; border-radius:6px; border:1px solid var(--line);">
+          <strong>🌟 Ideal Model Answer:</strong>
+          <p style="margin:4px 0 0; color:var(--ink);">${esc(ev.model_answer)}</p>
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    resBox.innerHTML = `<div class="msg err">${esc(e.message)}</div>`;
+  }
+  btn.disabled = false;
+  btn.textContent = "AI Score & Feedback";
+}
+
+function downloadCoverLetter(role, company) {
+  if (!currentTailored || !currentTailored.cover_letter) return;
+  const element = document.createElement("a");
+  const file = new Blob([currentTailored.cover_letter], { type: "text/plain" });
+  element.href = URL.createObjectURL(file);
+  element.download = `Cover_Letter_${(role || "Application").replace(/\s+/g, "_")}_${(company || "Company").replace(/\s+/g, "_")}.txt`;
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+  showToast("Cover letter downloaded!");
+}
+</script>
+</body>
+</html>
